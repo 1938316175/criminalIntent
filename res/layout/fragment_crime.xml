@@ -4,20 +4,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Title"
-        style="?android:listSeparatorTextViewStyle" />
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:layout_marginLeft="16dp"
+	    android:layout_marginTop="16dp" >
+	    <LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:layout_marginRight="4dp" >
+	        <ImageView
+	            android:id="@+id/crime_imageView"
+	            android:layout_width="80dp"
+	            android:layout_height="80dp"
+	            android:scaleType="centerInside"
+	            android:background="@android:color/darker_gray"
+	            android:cropToPadding="true"/>
+	        <ImageButton
+	            android:id="@+id/crime_imageButton"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+	            android:src="@android:drawable/ic_menu_camera"/>
+	    </LinearLayout>
+	    
+	    <LinearLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:layout_weight="1" >
+	        <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Title"
+	        style="?android:listSeparatorTextViewStyle" />
+	    
+	    <EditText
+	        android:id="@+id/crime_title"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="16dp"
+	        android:layout_marginRight="16dp"
+	        android:hint="请输入标题" />
+	    </LinearLayout>
+	    
+    </LinearLayout>
     
-    <EditText
-        android:id="@+id/crime_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:hint="请输入标题" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,12 +64,12 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp" />
         
-        <CheckBox
-            android:id="@+id/crime_solved"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="16dp"
-	        android:layout_marginRight="16dp"
-	        android:text="Solved?" />
+	<CheckBox
+		android:id="@+id/crime_solved"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="16dp"
+		android:layout_marginRight="16dp"
+		android:text="Solved?" />
     
 </LinearLayout>

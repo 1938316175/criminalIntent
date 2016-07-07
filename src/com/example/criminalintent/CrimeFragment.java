@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +26,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 public class CrimeFragment extends Fragment{
 
@@ -33,6 +38,13 @@ public class CrimeFragment extends Fragment{
 	private CheckBox mSolvedcCheckBox;
 	private static final String DIALOG_DATE = "date";
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_PHOTO = 1;
+	private static final String TAG = "CrimeFragment";
+	
+	private ImageButton mPhotoButton;
+	private ImageView mPhotoView;
+	
+	private static final String DIALOG_IMAGE = "image";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -107,6 +119,44 @@ public class CrimeFragment extends Fragment{
 			}
 		});
 		
+		mPhotoButton = (ImageButton)v.findViewById(R.id.crime_imageButton);
+		mPhotoButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getActivity(), CrimeCameraActivity.class);
+				//startActivity(intent);
+				startActivityForResult(intent, REQUEST_PHOTO);
+			//	Log.d("nimei", "enter take");
+			}
+		});
+
+		mPhotoView = (ImageView)v.findViewById(R.id.crime_imageView);
+		mPhotoView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Photo photo = mCrime.getmPhoto();
+				if(photo == null){
+					return;
+				}
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				String path = getActivity().getFileStreamPath(photo.getFilename()).getAbsolutePath();
+				ImageFragment.newInstance(path).show(fm, DIALOG_IMAGE);
+			}
+		});
+		
+		PackageManager pm = getActivity().getPackageManager();
+		boolean hasACamera = pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) || 
+				pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT) || 
+				Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD || 
+				Camera.getNumberOfCameras() > 0; 
+		if(!hasACamera){
+			mPhotoButton.setEnabled(false);
+		}
+		
 		return v;
 	}
 	
@@ -134,6 +184,16 @@ public class CrimeFragment extends Fragment{
 			mCrime.setmDate(date);
 	//		mDateButton.setText(mCrime.getmDate().toString());
 			updateDate();
+		}else if (requestCode == REQUEST_PHOTO) {
+			String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+			if(filename != null){
+				Log.i("wangbin_4", "filename: " + filename);
+				
+				Photo photo = new Photo(filename);
+				mCrime.setmPhoto(photo);
+				showPhoto();
+			//	Log.i("wangbin", "Crime: " + mCrime.getmTitle() + "has a photo");
+			}
 		}
 	}
 	
@@ -161,4 +221,27 @@ public class CrimeFragment extends Fragment{
 		CrimeLab.get(getActivity()).saveCrimes();
 	}
 	
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		PictureUtils.cleanImageView(mPhotoView);
+	}
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		showPhoto();
+	}
+	
+	private void showPhoto(){
+		Photo photo = mCrime.getmPhoto();
+		BitmapDrawable bitmapDrawable  = null;
+		if(photo != null){
+			String path = getActivity().getFileStreamPath(photo.getFilename()).getAbsolutePath();
+			bitmapDrawable = PictureUtils.getScaledDrawable(getActivity(), path);
+		}
+		mPhotoView.setImageDrawable(bitmapDrawable);
+	}
 }
