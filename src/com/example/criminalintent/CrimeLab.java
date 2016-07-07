@@ -13,11 +13,22 @@ public class CrimeLab {
 	private Context mAppContext;
 	private ArrayList<Crime> mCrimes;
 	
+	private static final String FILENAME = "crime.json";
+	private CriminalIntentJSONSerializer mSerializer;
 	
 	private CrimeLab(Context appContext){
 		mAppContext = appContext;
 	
-		mCrimes = new ArrayList<Crime>();
+		mSerializer = new CriminalIntentJSONSerializer(mAppContext, FILENAME);
+		try {
+			mCrimes = mSerializer.loadCrimes();
+		} catch (Exception e) {
+			mCrimes = new ArrayList<Crime>();
+			Log.d("wangbin", "Error loading crimes");
+			// TODO: handle exception
+		}
+		
+	//	mCrimes = new ArrayList<Crime>();
 		/*for (int i = 0; i < 100; i++) {
 			Crime crime = new Crime();
 			crime.setmTitle("Crime #" + i);
@@ -38,6 +49,18 @@ public class CrimeLab {
 	public void addCrime(Crime c){
 		mCrimes.add(c);
 	}
+	
+	public boolean saveCrimes() {
+		try {
+			mSerializer.saveCrimes(mCrimes);
+			Log.d("wangbin_1", "crimes saved to file");
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			Log.d("wangbin", "Error saving crimes: ");
+			return false;
+		} 
+	}  
 	
 	public ArrayList<Crime> getCrimes(){
 		return mCrimes;

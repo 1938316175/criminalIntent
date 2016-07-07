@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ public class CrimeFragment extends Fragment{
 		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
 		//mCrime = new Crime();
 		
+		Log.d("wangbin_1", "crimeFragment");
 		setHasOptionsMenu(true);
 	}
 	
@@ -150,6 +152,13 @@ public class CrimeFragment extends Fragment{
 			return super.onOptionsItemSelected(item);
 		}
 		
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		Log.d("wangbin_1", "pause");
+		CrimeLab.get(getActivity()).saveCrimes();
 	}
 	
 }

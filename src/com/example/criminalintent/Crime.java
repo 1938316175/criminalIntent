@@ -16,20 +16,35 @@ public class Crime {
 	private Date mDate;
 	private boolean mSolved;
 	
+	private static final String JSON_ID = "id";
+	private static final String JSON_TITLE = "title";
+	private static final String JSON_SOLVED = "solved";
+	private static final String JSON_DATE = "date";
+	
 	public Crime() {
 		mId = UUID.randomUUID();
 		mDate = new Date();
 	}
-//	
-//	public Crime(JSONObject json) throws JSONException{
-//		mId = UUID.fromString(json.getString(JSON_ID));
-//		if(json.has(JSON_TITLE)){
-//			mTitle = json.getString(JSON_TITLE);
-//		}
-//		mSolved = json.getBoolean(JSON_SOLVED);
-//		mDate = new Date(json.getLong(JSON_DATE));
-//	}
-//	
+	
+	public Crime(JSONObject json) throws JSONException{
+		mId = UUID.fromString(json.getString(JSON_ID));
+		if(json.has(JSON_TITLE)){
+			mTitle = json.getString(JSON_TITLE);
+		}
+		mSolved = json.getBoolean(JSON_SOLVED);
+		mDate = new Date(json.getLong(JSON_DATE));
+	}
+	
+	
+	public JSONObject toJSON() throws JSONException{
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(JSON_ID, mId.toString());
+		jsonObject.put(JSON_TITLE, mTitle);
+		jsonObject.put(JSON_SOLVED, mSolved);
+		jsonObject.put(JSON_DATE, mDate.getTime());
+		return jsonObject;
+		
+	}
 	
 	public String getmTitle() {
 		return mTitle;
